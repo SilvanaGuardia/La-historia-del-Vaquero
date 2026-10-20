@@ -1,0 +1,12 @@
+# Datos fuente (no se publican)
+*.xlsx
+~$*.xlsx
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python
+__pycache__/
+*.pyc

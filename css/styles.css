@@ -1,0 +1,379 @@
+/* ==========================================================================
+   Del Vaquero al Chalán — estilos
+   Medidas tomadas de la lámina original (1536 × 1024 px).
+   ========================================================================== */
+
+/* ---------- 1. Tokens ---------- */
+:root {
+  --paper:       #F1E0C8;   /* papel envejecido */
+  --paper-card:  #ECD8BD;   /* papel de las columnas, un tono más oscuro */
+  --ink:         #2C1D18;   /* marrón tinta: títulos */
+  --ink-soft:    #4A3A30;   /* cuerpo de texto */
+  --ink-faint:   rgba(62, 39, 35, .35); /* filetes y bordes */
+  --shadow:      0 14px 30px -14px rgba(62, 39, 35, .45);
+
+  --serif:  "Libre Caslon Text", Georgia, serif;
+  --label:  "Jost", "Futura", sans-serif;
+  --body:   "Nunito Sans", "Segoe UI", sans-serif;
+  --hand:   "Caveat", cursive;
+
+  --card-w: 206px;
+  --map-ink:   #6B4430;   /* siluetas e íconos de línea */
+  --gap:    15px;
+}
+
+/* ---------- 2. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  color: var(--ink-soft);
+  font-family: var(--body);
+  background-color: var(--paper);
+  /* textura de papel: manchas suaves + grano */
+  background-image:
+    radial-gradient(ellipse at 15% 10%, rgba(255, 250, 240, .55), transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(170, 120, 70, .12), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .12 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; height: auto; }
+h1, h2, p, dl, dd, figure, ol { margin: 0; padding: 0; }
+
+/* Las ilustraciones vienen con el papel "blanqueado": multiply las funde
+   con el fondo y conserva la textura de acuarela original. */
+.ink { mix-blend-mode: multiply; }
+
+.sheet {
+  max-width: 1536px;
+  margin: 0 auto;
+  padding: 12px 18px 16px;
+}
+
+/* ---------- 3. Cabecera ---------- */
+.masthead {
+  position: relative;
+  display: grid;
+  grid-template-columns: 370px 190px 1fr 344px;
+  align-items: center;
+  min-height: 188px;
+  border: 1px solid var(--ink-faint);
+  outline: 1px solid rgba(62, 39, 35, .15);
+  outline-offset: 3px;
+  margin: 4px 4px 14px;
+}
+/* esquinas tipo grabado */
+.masthead::before, .masthead::after {
+  content: ""; position: absolute; width: 14px; height: 14px;
+  border: 1px solid var(--ink-faint); border-radius: 50%;
+}
+.masthead::before { top: -8px; left: -8px; }
+.masthead::after  { bottom: -8px; right: -8px; }
+
+.masthead__title { padding: 26px 0 22px 44px; }
+.masthead h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 41px;
+  line-height: 1.08;
+  letter-spacing: .005em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.kicker {
+  margin-top: 12px;
+  font-family: var(--label);
+  font-size: 13px;
+  line-height: 1.6;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  max-width: 310px;
+}
+
+.masthead__motto {
+  align-self: stretch;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  border-left: 1px solid var(--ink-faint);
+  margin: 26px 0;
+  padding-left: 14px;
+}
+.motto {
+  font-family: var(--hand);
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--ink-soft);
+  transform: rotate(-9deg);
+  margin-bottom: 14px;
+}
+
+/* El bloque del mapa escala como una unidad: todo se posiciona en % */
+.masthead__map {
+  position: relative; container-type: inline-size;
+  width: 100%; max-width: 560px; aspect-ratio: 560 / 184; align-self: center;
+}
+.masthead__map .map { width: 78.6%; position: absolute; left: 0; top: 0; }
+.route {
+  position: absolute; left: 66.5%; top: 20%;
+  font-family: var(--label); font-size: 2.25cqi; letter-spacing: .12em;
+  text-transform: uppercase; text-align: center; color: var(--ink);
+  transform: rotate(-7deg); white-space: nowrap;
+}
+.compass { position: absolute; left: 82.9%; top: 39%; width: 14.6%; }
+
+.masthead__vignette { border-left: 1px solid var(--ink-faint); align-self: stretch; display: flex; align-items: center; }
+.masthead__vignette img { width: 342px; }
+
+/* ---------- 4. Columnas (carril con scroll horizontal) ---------- */
+.traditions {
+  position: relative;
+  /* medidas compartidas: la flecha se centra con la ilustración usando estas variables */
+  --rail-pad: 8px;
+  --head-h: 74px;
+  --rider-h: 376px;
+}
+
+.rail {
+  list-style: none;
+  display: flex;
+  gap: var(--gap);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  padding: var(--rail-pad) 0 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faint) transparent;
+}
+.rail::-webkit-scrollbar { height: 6px; }
+.rail::-webkit-scrollbar-thumb { background: var(--ink-faint); border-radius: 6px; }
+.rail:focus-visible { outline: 2px dashed var(--ink-faint); outline-offset: 4px; }
+
+.card {
+  position: relative;
+  flex: 0 0 var(--card-w);
+  scroll-snap-align: start;
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--paper-card);
+  background-image: linear-gradient(180deg, rgba(255,250,240,.35), rgba(255,250,240,0) 30%);
+  box-shadow: 0 0 0 1px rgba(62, 39, 35, .06);
+  padding-bottom: 20px;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s;
+}
+.card:hover, .card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 0 0 1px rgba(62, 39, 35, .12), var(--shadow);
+}
+/* botón invisible que cubre la tarjeta: toda la columna es clicable y accesible */
+.card__hit {
+  position: absolute; inset: 0; z-index: 2;
+  background: none; border: 0; cursor: pointer;
+}
+.card__hit:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.card__head {
+  position: relative; width: 100%;
+  height: var(--head-h);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center;
+  padding: 4px 6px 4px 34px;
+}
+.leaf { position: absolute; left: 6px; top: 8px; width: 30px; }
+.card__name {
+  font-family: var(--serif); font-weight: 400;
+  font-size: 16px; line-height: 1.05;
+  letter-spacing: .02em; text-transform: uppercase;
+  color: var(--ink);
+  hyphens: auto; overflow-wrap: anywhere;
+}
+.card__name.is-long { line-height: 1.3;}
+.card__place {
+  margin-top: 5px;
+  font-family: var(--label); font-size: 10.5px; letter-spacing: .12em; line-height: 1.3;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.card .facts dd {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;          /* ← máximo de líneas por dato */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+/* Ilustración del jinete (o aviso si falta el archivo) */
+.rider { width: 100%; height: var(--rider-h); flex: 0 0 auto; overflow: hidden; }
+.rider > img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .5s; }
+.card:hover .rider > img { transform: scale(1.015); }
+.rider.is-missing {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  margin: 0 10px; width: calc(100% - 20px);
+  border: 1.5px dashed var(--ink-faint);
+  background: rgba(255, 250, 240, .35);
+  font-family: var(--label); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft);
+  text-align: center;
+}
+.rider.is-missing > img { width: 64px; height: auto; flex: 0 0 auto; opacity: .55; }
+.rider.is-missing code { font-size: 10px; letter-spacing: 0; text-transform: none; opacity: .75; padding: 0 8px; word-break: break-all; }
+
+/* Datos con íconos: reloj · mapa · vestimenta · caballo */
+.facts { width: 100%; padding: 10px 12px 0 14px; display: grid; gap: 9px; align-content: start; }
+.facts > div { display: grid; grid-template-columns: 34px 1fr; gap: 6px; align-items: start; }
+.facts > div[hidden] { display: none; }
+.facts dt { display: flex; justify-content: center; }
+.facts dt img { width: 28px; }
+.facts dd { font-size: 13px; line-height: 1.45; color: var(--ink-soft); padding-top: 2px; }
+.facts > div:first-child dd { padding-top: 4px; font-family: var(--label); letter-spacing: .03em; }
+
+/* Ícono de mapa: genérico (línea) hasta que carga la silueta del país */
+.map-icon {
+  width: 30px; height: 30px;
+  fill: none; stroke: var(--map-ink); stroke-width: 1.5; stroke-linejoin: round;
+}
+.map-icon.is-country { fill: var(--map-ink); stroke: none; opacity: .92; }
+.map-icon--big { width: 64px; height: 64px; flex: 0 0 64px; }
+
+/* Flechas de navegación: encima de las tarjetas y centradas con la ilustración */
+.rail-btn {
+  position: absolute; z-index: 20;
+  top: calc(var(--rail-pad) + var(--head-h) + var(--rider-h) / 2);
+  translate: 0 -50%;
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid var(--ink-faint);
+  background: rgba(241, 224, 200, .94); color: var(--ink);
+  font: 30px/1 var(--serif); padding-bottom: 4px; cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .2s, background .2s;
+}
+.rail-btn:hover { transform: scale(1.08); background: var(--paper-card); }
+.rail-btn--prev { left: 10px; }
+.rail-btn--next { right: 10px; }
+
+/* ---------- 5. Pie ---------- */
+.foot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 0 24px;
+}
+.foot__icons { display: flex; align-items: center; justify-content: space-around; gap: 18px; }
+.foot__icons img { height: 62px; width: auto; }
+.foot__motto {
+  display: flex; gap: 28px; align-items: center;
+  font-family: var(--serif); font-size: 14px; letter-spacing: .32em;
+  text-transform: uppercase; color: var(--ink);
+  border-top: 1px solid var(--ink-faint); border-bottom: 1px solid var(--ink-faint);
+  padding: 20px 26px;
+}
+/* flechita grabada */
+.arrow { width: 40px; height: 1px; background: var(--ink-faint); position: relative; }
+.arrow::after {
+  content: ""; position: absolute; right: -2px; top: -3px;
+  border: 4px solid transparent; border-left: 7px solid var(--ink-faint);
+}
+
+/* ---------- 6. Ventana emergente ---------- */
+.modal {
+  width: min(940px, 94vw);
+  max-height: 90vh;
+  border: 1px solid var(--ink-faint);
+  background: var(--paper);
+  color: var(--ink-soft);
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 30px 80px -20px rgba(44, 29, 24, .6);
+}
+.modal::backdrop { background: rgba(44, 29, 24, .45); backdrop-filter: blur(2px); }
+.modal[open] { animation: rise .35s cubic-bezier(.2,.7,.2,1); }
+.modal__body { display: grid; grid-template-columns: 280px 1fr; height: min(90vh, 900px); }
+.modal__media { background: var(--paper-card); padding: 24px 0; display: flex; align-items: center; min-height: 0; overflow: hidden; }
+.modal__media .rider { height: auto; max-height: 100%; aspect-ratio: 215 / 376; }
+.modal__media .rider.is-missing { height: 420px; aspect-ratio: auto; }
+/* el texto tiene su propio scroll (barra marrón) */
+.modal__text { min-height: 0; overflow-y: auto; padding: 30px 34px 30px 30px; overscroll-behavior: contain; }
+.modal__text, .modal__body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--map-ink) rgba(107, 68, 48, .12);
+}
+.modal__text::-webkit-scrollbar, .modal__body::-webkit-scrollbar { width: 8px; }
+.modal__text::-webkit-scrollbar-track, .modal__body::-webkit-scrollbar-track { background: rgba(107, 68, 48, .12); border-radius: 8px; }
+.modal__text::-webkit-scrollbar-thumb, .modal__body::-webkit-scrollbar-thumb { background: var(--map-ink); border-radius: 8px; }
+.modal__text::-webkit-scrollbar-thumb:hover, .modal__body::-webkit-scrollbar-thumb:hover { background: var(--ink); }
+
+.modal__head { display: flex; gap: 16px; align-items: center; margin-bottom: 22px; padding-right: 24px; }
+.modal h2 {
+  font-family: var(--serif); font-weight: 700; font-size: 32px; line-height: 1.05;
+  text-transform: uppercase; color: var(--ink); margin: 4px 0 4px;
+}
+.modal__arquetipo { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-soft); }
+
+.facts--labeled { padding: 0; gap: 0; }
+.facts--labeled > div {
+  grid-template-columns: 190px 1fr; gap: 14px;
+  padding: 10px 0; border-top: 1px solid rgba(62, 39, 35, .14);
+}
+.facts--labeled dt {
+  display: flex; justify-content: flex-start; align-items: flex-start; gap: 10px;
+  font-family: var(--label); font-size: 11px; letter-spacing: .13em; line-height: 1.4;
+  text-transform: uppercase; color: var(--ink); padding-top: 2px;
+}
+.facts--labeled dt svg {
+  flex: 0 0 20px; width: 20px; height: 20px; margin-top: -2px;
+  fill: none; stroke: var(--map-ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+}
+.facts--labeled dd,
+.facts--labeled > div:first-child dd { font-size: 14.5px; line-height: 1.5; padding-top: 0; font-family: var(--body); letter-spacing: 0; }
+
+.modal__quote {
+  margin: 20px 0 0; padding: 18px 20px 18px 54px; position: relative;
+  border-top: 1px solid var(--ink-faint); border-bottom: 1px solid var(--ink-faint);
+  font-family: var(--serif); font-style: italic; font-size: 16px; line-height: 1.55; color: var(--ink);
+}
+.modal__quote::before {
+  content: "“"; position: absolute; left: 12px; top: 2px;
+  font-size: 58px; line-height: 1; color: var(--map-ink); opacity: .6;
+}
+
+.modal__close {
+  position: absolute; top: 10px; right: 14px; z-index: 2;
+  background: none; border: 0; font: 32px/1 var(--serif); color: var(--ink); cursor: pointer;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+
+/* ---------- 7. Responsive ---------- */
+@media (max-width: 1280px) {
+  .masthead { grid-template-columns: 360px 180px 1fr; }
+  .masthead__vignette { display: none; }
+}
+@media (max-width: 960px) {
+  .masthead { grid-template-columns: 1fr 1fr; }
+  .masthead__map { grid-column: 1 / -1; margin: 0 auto 14px; }
+  .foot { grid-template-columns: 1fr; justify-items: center; }
+}
+@media (max-width: 640px) {
+  :root { --card-w: 78vw; }
+  .sheet { padding: 10px 12px; overflow-x: clip; }
+  .masthead { grid-template-columns: 1fr; text-align: center; }
+  .masthead__title { padding: 22px 16px 10px; }
+  .masthead h1 { font-size: 34px; }
+  .kicker { margin-inline: auto; font-size: 11.5px; }
+  .masthead__motto { border-left: 0; margin: 4px 0 0; padding: 0; }
+  .masthead__map { width: calc(100% - 20px); }
+  .traditions { --rider-h: calc(78vw * 376 / 215); }
+  .rail-btn { display: none; }
+  .foot__icons:last-child { display: none; }
+  .foot__motto { font-size: 11px; letter-spacing: .22em; gap: 12px; padding: 14px 8px; flex-wrap: wrap; justify-content: center; }
+  .modal { max-height: 92vh; }
+  .modal__body { grid-template-columns: 1fr; overflow-y: auto; height: auto; max-height: 92vh; }
+  .modal__media { padding: 16px 0 0; justify-content: center; }
+  .modal__media .rider { width: 55%; margin: 0 auto; }
+  .modal__media .rider.is-missing { height: 240px; }
+  .modal__text { overflow: visible; min-height: auto; padding: 20px 18px 24px; }
+  .modal h2 { font-size: 26px; }
+  .facts--labeled > div { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, .rail { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* contenedor de íconos SVG (oculto) */
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
